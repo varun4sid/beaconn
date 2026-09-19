@@ -1,12 +1,13 @@
 package main
 
 import (
-	"fmt"
-
+	"github.com/varun4sid/beaconn-backend/internal/server"
 	"github.com/varun4sid/beaconn-backend/internal/config"
 )
 
 func main() {
-	cfg := config.Load()
-	fmt.Println(cfg)
+	config.Load()
+
+	s := server.NewServer()
+	s.Start()
 }

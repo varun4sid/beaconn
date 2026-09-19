@@ -1,34 +1,24 @@
 package config
 
 import (
-	"log"
-	"os"
-	"time"
-
 	"github.com/joho/godotenv"
+	"os"
 )
 
 type Config struct {
-	AppEnv            string
-	Port              string
-	AllowedOrigin     string
-	HttpClientTimeout time.Duration
+	AppEnv string
+	Port   string
 }
 
 func Load() *Config {
-	_ = godotenv.Load()
-
-	timeoutStr := getEnv("HTTP_CLIENT_TIMEOUT", "10s")
-	timeout, err := time.ParseDuration(timeoutStr)
+	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("Invalid HTTP_CLIENT_TIMEOUT: %v", err)
+		panic("Error loading .env file")
 	}
 
 	return &Config{
 		AppEnv: getEnv("APP_ENV", "development"),
-		Port: getEnv("PORT", "8080"),
-		AllowedOrigin: getEnv("ALLOWED_ORIGIN", "*"),
-		HttpClientTimeout: timeout,
+		Port:   getEnv("PORT", "8080"),
 	}
 }
 
