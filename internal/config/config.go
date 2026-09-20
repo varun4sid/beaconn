@@ -3,23 +3,29 @@ package config
 import (
 	"github.com/joho/godotenv"
 	"os"
+	"strconv"
 )
 
 type Config struct {
 	AppEnv string
-	Port   string
+	Port   uint64
 }
 
-func Load() *Config {
+func Load() (*Config, error) {
 	err := godotenv.Load()
 	if err != nil {
-		panic("Error loading .env file")
+		return nil, err
+	}
+
+	port, err := strconv.ParseUint(getEnv("PORT", "8080"), 10, 0)
+	if err != nil {
+		port = 8080
 	}
 
 	return &Config{
 		AppEnv: getEnv("APP_ENV", "development"),
-		Port:   getEnv("PORT", "8080"),
-	}
+		Port:   port,
+	}, nil
 }
 
 func getEnv(key, fallback string) string {

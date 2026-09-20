@@ -7,18 +7,20 @@ import (
 	"net/http"
 	"time"
 	"fmt"
+
 	"github.com/varun4sid/beaconn-backend/internal/api/health"
+	"github.com/varun4sid/beaconn-backend/internal/config"
 )
 
 type Server struct {
 	Router *chi.Mux
-	Port   uint16
+	Port   uint64
 }
 
-func NewServer() *Server {
+func NewServer(cfg *config.Config) *Server {
 	s := &Server{
 		Router: chi.NewRouter(),
-		Port:   uint16(8080),
+		Port:   cfg.Port,
 	}
 
 	s.middleware()

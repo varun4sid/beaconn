@@ -1,13 +1,18 @@
 package main
 
 import (
-	"github.com/varun4sid/beaconn-backend/internal/server"
+	"log"
+
 	"github.com/varun4sid/beaconn-backend/internal/config"
+	"github.com/varun4sid/beaconn-backend/internal/server"
 )
 
 func main() {
-	config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatal("Error loading configuration: ", err)
+	}
 
-	s := server.NewServer()
+	s := server.NewServer(cfg)
 	s.Start()
 }
