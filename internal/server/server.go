@@ -14,7 +14,7 @@ import (
 
 type Server struct {
 	Router *chi.Mux
-	Port   uint64
+	Port   int
 }
 
 func NewServer(cfg *config.Config) *Server {

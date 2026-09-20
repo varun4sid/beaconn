@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/joho/godotenv"
 	"os"
 	"strconv"
@@ -8,18 +9,19 @@ import (
 
 type Config struct {
 	AppEnv string
-	Port   uint64
+	Port   int
 }
 
 func Load() (*Config, error) {
 	err := godotenv.Load()
-	if err != nil {
-		return nil, err
+	if err != nil && !os.IsNotExist(err) {
+		return nil, fmt.Errorf("Load .env")
 	}
 
-	port, err := strconv.ParseUint(getEnv("PORT", "8080"), 10, 0)
-	if err != nil {
-		port = 8080
+	portText := getEnv("PORT", "8080")
+	port, err := strconv.Atoi(portText)
+	if err != nil || port < 1 || port > 65535 {
+		return nil, fmt.Errorf("invalid PORT %q", portText)
 	}
 
 	return &Config{
