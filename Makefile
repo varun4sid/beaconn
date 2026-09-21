@@ -3,7 +3,7 @@
 run:
 	@go run ./cmd/beaconn/main.go
 
-build:
+build: fmt vet test
 	@go build -o ./build/beaconn ./cmd/beaconn/main.go
 	@chmod +x ./build/beaconn
 

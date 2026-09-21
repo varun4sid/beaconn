@@ -6,13 +6,13 @@ import (
 )
 
 type HealthResponse struct {
-	Status string `json:"status"`
+	Status  string `json:"status"`
 	Message string `json:"message"`
 }
 
 func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	response := HealthResponse{
-		Status: "success",
+		Status:  "success",
 		Message: "API is healthy",
 	}
 

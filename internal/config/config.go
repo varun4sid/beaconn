@@ -8,8 +8,9 @@ import (
 )
 
 type Config struct {
-	AppEnv string
-	Port   int
+	AppEnv        string
+	Port          int
+	AllowedDomain string
 }
 
 func Load() (*Config, error) {
@@ -25,8 +26,9 @@ func Load() (*Config, error) {
 	}
 
 	return &Config{
-		AppEnv: getEnv("APP_ENV", "development"),
-		Port:   port,
+		AppEnv:        getEnv("APP_ENV", "development"),
+		Port:          port,
+		AllowedDomain: getEnv("ALLOWED_DOMAIN", ""),
 	}, nil
 }
 
