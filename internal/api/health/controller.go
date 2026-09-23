@@ -11,7 +11,7 @@ type HealthResponse struct {
 	Message string `json:"message"`
 }
 
-func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+func healthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	response := HealthResponse{
 		Status:  "success",
 		Message: "API is healthy",

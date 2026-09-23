@@ -4,13 +4,14 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
+	"fmt"
 	"net/http"
 	"time"
-	"fmt"
 
-	"github.com/varun4sid/beaconn-backend/internal/api/health"
-	"github.com/varun4sid/beaconn-backend/internal/config"
 	"github.com/varun4sid/beaconn-backend/internal/api/auth"
+	"github.com/varun4sid/beaconn-backend/internal/api/health"
+	"github.com/varun4sid/beaconn-backend/internal/api/leave"
+	"github.com/varun4sid/beaconn-backend/internal/config"
 )
 
 type Server struct {
@@ -41,6 +42,7 @@ func (s *Server) middleware() {
 func (s *Server) routes(cfg *config.Config) {
 	s.Router.Mount("/health", health.Routes())
 	s.Router.Mount("/auth", auth.Routes(cfg))
+	s.Router.Mount("/leave", leave.Routes(cfg))
 }
 
 func (s *Server) Start() {

@@ -1,6 +1,8 @@
 package scraper
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func (s *Session) Login(rollno, password string) (int, error) {
 	indexURL := s.baseURL + "/Hostel/Home/Index"
@@ -23,5 +25,7 @@ func (s *Session) Login(rollno, password string) (int, error) {
 	}
 	response.Body.Close()
 
+	s.Rollno = rollno
+	s.Password = password
 	return response.StatusCode, nil
 }
