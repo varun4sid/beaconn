@@ -3,14 +3,17 @@ package config
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
 
 type Config struct {
 	AppEnv        string
 	Port          int
 	AllowedDomain string
+	Transport     *http.Transport
 }
 
 func Load() (*Config, error) {
@@ -29,6 +32,7 @@ func Load() (*Config, error) {
 		AppEnv:        getEnv("APP_ENV", "development"),
 		Port:          port,
 		AllowedDomain: getEnv("ALLOWED_DOMAIN", ""),
+		Transport:     newTransport(),
 	}, nil
 }
 
@@ -37,4 +41,13 @@ func getEnv(key, fallback string) string {
 		return value
 	}
 	return fallback
+}
+
+func newTransport() *http.Transport {
+	return &http.Transport{
+		MaxIdleConns:        50,
+		MaxIdleConnsPerHost: 50,
+		MaxConnsPerHost:     40,
+		IdleConnTimeout:     180 * time.Second,
+	}
 }

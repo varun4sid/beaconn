@@ -1,8 +1,9 @@
 package health
 
 import (
-	"encoding/json"
 	"net/http"
+
+	"github.com/varun4sid/beaconn-backend/internal/api"
 )
 
 type HealthResponse struct {
@@ -16,13 +17,5 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 		Message: "API is healthy",
 	}
 
-	jsonResponse, err := json.Marshal(response)
-	if err != nil {
-		http.Error(w, "Error generating JSON response", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(jsonResponse)
+	api.WriteResponseBody(w, response)
 }
