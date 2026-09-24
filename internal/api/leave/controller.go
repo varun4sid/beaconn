@@ -62,7 +62,12 @@ func leaveHandler(w http.ResponseWriter, r *http.Request, c *cfg.Config) {
 		payload.ToDate = toDate.Format("02/01/2006")
 	}
 
-	s := scraper.NewSession(c)
+	s, err := scraper.NewSession(c)
+	if err != nil {
+		api.HttpError(w, fmt.Errorf("failed to create scraper session: %w", err), http.StatusInternalServerError)
+		return
+	}
+	
 	statusCode, err := s.Login(body.Rollno, body.Password)
 	if err != nil || statusCode != http.StatusOK {
 		api.HttpError(w, err, http.StatusInternalServerError)

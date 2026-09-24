@@ -44,10 +44,19 @@ func getEnv(key, fallback string) string {
 }
 
 func newTransport() *http.Transport {
-	return &http.Transport{
-		MaxIdleConns:        50,
-		MaxIdleConnsPerHost: 50,
-		MaxConnsPerHost:     40,
-		IdleConnTimeout:     180 * time.Second,
-	}
+    tr := http.DefaultTransport.(*http.Transport).Clone()
+
+    tr.MaxIdleConns = 100
+    tr.MaxIdleConnsPerHost = 20
+    tr.MaxConnsPerHost = 40
+
+    tr.IdleConnTimeout = 60 * time.Second
+
+    tr.TLSHandshakeTimeout = 10 * time.Second
+    tr.ResponseHeaderTimeout = 10 * time.Second
+    tr.ExpectContinueTimeout = 1 * time.Second
+
+    tr.DisableKeepAlives = false
+
+    return tr
 }

@@ -24,7 +24,11 @@ func loginHandler(w http.ResponseWriter, r *http.Request, c *cfg.Config) {
 
 	rollno := strings.ToUpper(body.Rollno)
 
-	s := scraper.NewSession(c)
+	s, err := scraper.NewSession(c)
+	if err != nil {
+		api.HttpError(w, fmt.Errorf("failed to create scraper session: %w", err), http.StatusInternalServerError)
+		return
+	}
 	statusCode, err := s.Login(rollno, body.Password)
 	if err != nil {
 		api.HttpError(w, fmt.Errorf("failed to login: %w", err), http.StatusInternalServerError)

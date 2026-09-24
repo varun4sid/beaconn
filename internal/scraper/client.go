@@ -9,8 +9,11 @@ import (
 	cfg "github.com/varun4sid/beaconn-backend/internal/config"
 )
 
-func NewSession(c *cfg.Config) *Session {
-	cookieJar, _ := cookiejar.New(nil)
+func NewSession(c *cfg.Config) (*Session, error) {
+	cookieJar, err := cookiejar.New(nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create cookie jar: %w", err)
+	}
 
 	return &Session{
 		baseURL: fmt.Sprintf("https://%s", c.AllowedDomain),
@@ -19,5 +22,5 @@ func NewSession(c *cfg.Config) *Session {
 			Jar:       cookieJar,
 			Timeout:   15 * time.Second,
 		},
-	}
+	}, nil
 }
