@@ -40,9 +40,15 @@ func loginHandler(w http.ResponseWriter, r *http.Request, c *cfg.Config) {
 		return
 	}
 
+	studentName, err := s.GetStudentName()
+	if err != nil {
+		api.HttpError(w, fmt.Errorf("failed to get student name: %w", err), http.StatusInternalServerError)
+		return
+	}
+
 	response := AuthResponse{
 		Status:  "success",
-		Message: "Login successful",
+		Username: studentName,
 	}
 	
 	api.WriteResponseBody(w, response)

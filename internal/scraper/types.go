@@ -11,6 +11,10 @@ type Session struct {
 	Password string
 }
 
+type StudentDetails struct {
+	Name string `json:"name"`
+}
+
 type ManagerResponse struct {
 	Id   string `json:"staff_id"`
 	Name string `json:"staff_name"`

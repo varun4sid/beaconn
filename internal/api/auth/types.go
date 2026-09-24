@@ -7,5 +7,5 @@ type AuthRequest struct {
 
 type AuthResponse struct {
 	Status  string `json:"status"`
-	Message string `json:"message"`
+	Username string `json:"username,omitempty"`
 }
