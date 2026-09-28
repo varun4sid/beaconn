@@ -11,6 +11,7 @@ import (
 	"github.com/varun4sid/beaconn-backend/internal/api/auth"
 	"github.com/varun4sid/beaconn-backend/internal/api/health"
 	"github.com/varun4sid/beaconn-backend/internal/api/leave"
+	"github.com/varun4sid/beaconn-backend/internal/api/token"
 	"github.com/varun4sid/beaconn-backend/internal/config"
 )
 
@@ -43,6 +44,7 @@ func (s *Server) routes(cfg *config.Config) {
 	s.Router.Mount("/health", health.Routes())
 	s.Router.Mount("/auth", auth.Routes(cfg))
 	s.Router.Mount("/leave", leave.Routes(cfg))
+	s.Router.Mount("/token", token.Routes(cfg))
 }
 
 func (s *Server) Start() {

@@ -36,3 +36,14 @@ type LeavePayload struct {
 type LeaveResponse struct {
 	Oresult int `json:"oresult"`
 }
+
+type TokenDetails struct {
+	Name     string
+	Quantity string
+}
+
+type TokenData struct {
+	Status       string         `json:"status"`
+	QRCode       string         `json:"qrcode"`
+	TokenDetails []TokenDetails `json:"tokenDetails"`
+}
