@@ -38,8 +38,8 @@ type LeaveResponse struct {
 }
 
 type TokenDetails struct {
-	Name     string
-	Quantity string
+	Name     string `json:"name"`
+	Quantity string `json:"quantity"`
 }
 
 type TokenData struct {

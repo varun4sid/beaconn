@@ -6,6 +6,7 @@ import (
 
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/varun4sid/beaconn-backend/internal/api/auth"
@@ -28,16 +29,17 @@ func NewServer(cfg *config.Config) *Server {
 		Transport: cfg.Transport,
 	}
 
-	s.middleware()
+	s.middleware(cfg)
 	s.routes(cfg)
 
 	return s
 }
 
-func (s *Server) middleware() {
+func (s *Server) middleware(cfg *config.Config) {
 	s.Router.Use(middleware.Logger)
 	s.Router.Use(middleware.Recoverer)
 	s.Router.Use(middleware.Timeout(60 * time.Second))
+	s.Router.Use(corsMiddleware(cfg.AppEnv, cfg.AllowedOrigin))
 }
 
 func (s *Server) routes(cfg *config.Config) {
@@ -49,5 +51,47 @@ func (s *Server) routes(cfg *config.Config) {
 
 func (s *Server) Start() {
 	fmt.Printf("Server started on port %d\n", s.Port)
-	http.ListenAndServe(fmt.Sprintf(":%d", s.Port), s.Router)
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", s.Port), s.Router); err != nil {
+		fmt.Printf("Error starting server: %v\n", err)
+	}
+}
+
+func corsMiddleware(appEnv, allowedDomain string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			origin := r.Header.Get("Origin")
+			if originAllowed(appEnv, allowedDomain, origin) {
+				w.Header().Set("Access-Control-Allow-Origin", origin)
+				w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+				w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+				w.Header().Add("Vary", "Origin")
+			}
+			if r.Method == http.MethodOptions {
+				w.WriteHeader(http.StatusNoContent)
+				return
+			}
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
+func originAllowed(appEnv, allowedDomain, origin string) bool {
+	if origin == "" || appEnv == "no_env" || allowedDomain == "" {
+		return false
+	}
+
+	if appEnv == "development" {
+		return true
+	}
+
+	if allowedDomain == origin {
+		return true
+	}
+
+	if !strings.Contains(allowedDomain, "://") {
+		return origin == fmt.Sprintf("http://%s", allowedDomain) ||
+			origin == fmt.Sprintf("https://%s", allowedDomain)
+	}
+
+	return false
 }
