@@ -7,7 +7,9 @@ import (
 )
 
 func (s *Session) GetToken() (TokenData, error) {
-	var tokenResponse TokenData
+	tokenResponse := TokenData{
+		Status: "error",
+	}
 	tokenURL := s.baseURL + "/Hostel/QRCode/QRcodeGenerate"
 
 	response, err := s.Client.Get(tokenURL)
@@ -27,6 +29,7 @@ func (s *Session) GetToken() (TokenData, error) {
 
 	token, exists := doc.Find("img[alt='QR Code']").Attr("src")
 	if !exists {
+		tokenResponse.Status = "failed"
 		return tokenResponse, fmt.Errorf("failed to find token in the response")
 	}
 

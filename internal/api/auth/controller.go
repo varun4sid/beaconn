@@ -47,9 +47,11 @@ func loginHandler(w http.ResponseWriter, r *http.Request, c *cfg.Config) {
 	}
 
 	response := AuthResponse{
-		Status:  "success",
+		Status:   "success",
 		Username: studentName,
 	}
-	
+
+	fmt.Printf("USER: %s - %s AUTH SUCCESS\n", rollno, studentName)
+
 	api.WriteResponseBody(w, response)
 }

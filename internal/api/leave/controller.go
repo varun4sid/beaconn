@@ -67,7 +67,7 @@ func leaveHandler(w http.ResponseWriter, r *http.Request, c *cfg.Config) {
 		api.HttpError(w, fmt.Errorf("failed to create scraper session: %w", err), http.StatusInternalServerError)
 		return
 	}
-	
+
 	statusCode, err := s.Login(body.Rollno, body.Password)
 	if err != nil || statusCode != http.StatusOK {
 		api.HttpError(w, err, http.StatusInternalServerError)
@@ -103,6 +103,8 @@ func leaveHandler(w http.ResponseWriter, r *http.Request, c *cfg.Config) {
 		"status":  "success",
 		"message": "Leave applied successfully",
 	}
+
+	fmt.Printf("USER: %s - LEAVE APPLIED SUCCESSFULLY\n", body.Rollno)
 
 	api.WriteResponseBody(w, response)
 }

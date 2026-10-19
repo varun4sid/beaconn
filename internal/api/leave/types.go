@@ -8,4 +8,3 @@ type LeaveRequest struct {
 	ToDate   *string `json:"toDate"`
 	Reason   *string `json:"reason"`
 }
-

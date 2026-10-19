@@ -1,8 +1,8 @@
 package scraper
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 )
 
 func (s *Session) Login(rollno, password string) (int, error) {

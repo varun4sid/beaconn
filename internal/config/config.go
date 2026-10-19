@@ -51,13 +51,21 @@ func newTransport() *http.Transport {
 	tr.MaxIdleConns = 100
 	tr.MaxIdleConnsPerHost = 20
 	tr.MaxConnsPerHost = 40
+	tr.MaxIdleConns = 100
+	tr.MaxIdleConnsPerHost = 20
+	tr.MaxConnsPerHost = 40
 
+	tr.IdleConnTimeout = 60 * time.Second
 	tr.IdleConnTimeout = 60 * time.Second
 
 	tr.TLSHandshakeTimeout = 10 * time.Second
 	tr.ResponseHeaderTimeout = 10 * time.Second
 	tr.ExpectContinueTimeout = 1 * time.Second
+	tr.TLSHandshakeTimeout = 10 * time.Second
+	tr.ResponseHeaderTimeout = 10 * time.Second
+	tr.ExpectContinueTimeout = 1 * time.Second
 
+	tr.DisableKeepAlives = false
 	tr.DisableKeepAlives = false
 
 	return tr

@@ -33,15 +33,27 @@ func tokenHandler(w http.ResponseWriter, r *http.Request, c *cfg.Config) {
 	}
 
 	token, err := s.GetToken()
-	if err != nil {
+	if err != nil && token.Status == "error" {
 		api.HttpError(w, fmt.Errorf("failed to get token: %w", err), http.StatusInternalServerError)
+		return
+	}
+
+	if token.Status == "failed" {
+		response := TokenResponse{
+			Status:  "failure",
+			Message: "Token unavailable at the moment",
+			Token:   scraper.TokenData{},
+		}
+		api.WriteResponseBody(w, response)
 		return
 	}
 
 	response := TokenResponse{
 		Status: "success",
-		Token: token,
+		Token:  token,
 	}
+
+	fmt.Printf("USER: %s - TOKEN GENERATED SUCCESSFULLY\n", body.Rollno)
 
 	api.WriteResponseBody(w, response)
 }

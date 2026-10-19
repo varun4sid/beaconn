@@ -1,6 +1,6 @@
 .PHONY:	run build launch fmt vet test
 
-run:
+run: fmt
 	@go run ./cmd/beaconn/main.go
 
 build: fmt vet test

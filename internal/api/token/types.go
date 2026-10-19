@@ -5,11 +5,12 @@ import (
 )
 
 type TokenRequest struct {
-	Rollno string `json:"rollno"`
+	Rollno   string `json:"rollno"`
 	Password string `json:"password"`
 }
 
 type TokenResponse struct {
-	Status string `json:"status"`
-	Token scraper.TokenData `json:"token"`
+	Status  string            `json:"status"`
+	Message string            `json:"message"`
+	Token   scraper.TokenData `json:"token"`
 }
