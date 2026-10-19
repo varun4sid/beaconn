@@ -1,59 +1,95 @@
-# Beaconn
+# Beaconn frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.7.
+The Beaconn frontend is an Angular 22 standalone application for the student
+portal. It provides login, a responsive dashboard, live meal-token loading, and
+leave application.
 
-## Development server
+## Run locally
 
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+From this directory:
 
 ```bash
-ng generate component component-name
+npm install
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Open `http://localhost:4200/`. Start the Go backend separately on
+`http://localhost:8080`. The repository root `.env` should contain:
+
+```env
+APP_ENV=development
+PORT=8080
+CLIENT_DOMAIN=hostel.ac.in
+ALLOWED_DOMAIN=http://localhost:4200
+```
+
+## Useful commands
 
 ```bash
-ng generate --help
+npm start                 # Development server with live reload
+npm run build             # Production build
+npm test -- --watch=false # One test run
 ```
 
-## Building
+## Project structure
 
-To build the project run:
-
-```bash
-ng build
+```text
+src/app/
+  core/
+    auth/       # Login models and session service
+    token/      # Live-token API service and models
+    leave/      # Leave API service and models
+  features/
+    auth/login/ # Login page component and local styles
+    dashboard/ # Dashboard component and local styles
+  app.routes.ts
+  app.config.ts
+src/styles.css             # Global design tokens and reset
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Angular concepts used here
 
-## Running unit tests
+- **Standalone components:** Components import their own dependencies in the
+  `@Component({ imports: [...] })` metadata. There is no `NgModule`.
+- **Signals:** `signal()` stores small pieces of reactive UI state. Read a
+  signal in TypeScript with `value()` and update it with `.set()` or `.update()`.
+- **Reactive forms:** `FormBuilder` creates typed form controls. The template
+  connects them with `[formGroup]` and `formControlName`.
+- **Router guards:** The dashboard route checks `AuthService` and redirects
+  unauthenticated users to `/login`.
+- **HTTP services:** `AuthService`, `TokenService`, and `LeaveService` keep API
+  calls out of components. They use Angular `HttpClient` and RxJS
+  `Observable`s.
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Customizing the UI
 
-```bash
-ng test
+Global colors are CSS variables in `src/styles.css`:
+
+```css
+:root {
+  --bg: #0c111c;
+  --surface: #121a28;
+  --accent: #6ea8fe;
+}
 ```
 
-## Running end-to-end tests
+Change these tokens first when adjusting the theme. Component-specific layout
+and styling lives beside the component:
 
-For end-to-end (e2e) testing, run:
+- `src/app/features/auth/login/login.component.css`
+- `src/app/features/dashboard/dashboard.component.css`
 
-```bash
-ng e2e
-```
+The dashboard switches from two cards to one card at `760px`, so mobile changes
+should usually be made inside that component's media query.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Backend API calls
 
-## Additional Resources
+The frontend currently calls:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- `POST /auth/login` with `{ rollno, password }`
+- `POST /token` with the signed-in credentials
+- `POST /leave/apply` with quick or custom date data
+
+The session is stored in `sessionStorage`, which means it is cleared when the
+browser tab is closed. The existing backend requires credentials for token and
+leave requests, so the session service keeps them available for that tab.
